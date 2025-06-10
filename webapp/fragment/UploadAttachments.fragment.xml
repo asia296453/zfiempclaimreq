@@ -1,0 +1,30 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:u="sap.ui.unified" xmlns:f="sap.ui.layout.form">
+	<Dialog title="{i18n>fileupld}" id="idDialogUploadAttachments1">
+	
+		<UploadCollection id="idUploadCollectionAttachments" beforeUploadStarts="onBeforeUploadStartsListData" uploadButtonInvisible="false"
+			uploadComplete="onUploadCompleteListData" multiple="true" instantUpload="false" mode="SingleSelectMaster"
+			fileDeleted="onFileDeletedListData" items="{ path: 'UploadAttachmentModel>/ATTACHSet', templateShareable: false }"
+			uploadUrl="/sap/opu/odata/sap/ZFI_EMP_CLAIM_REQ_SRV/ATTACHSet" change="onChangeListData" typeMissmatch="onTypeMissmatchNew"
+			uploadEnabled="true" 
+			>
+			<!--uploadEnabled="{= (${Status} !== 'C' &amp;&amp; ${Status} !== 'I') &amp;&amp; ${Adminstatus} !== 'A'}"-->
+			<items>
+				<UploadCollectionItem id="idUploadCollectionItemAddNew" documentId="{UploadAttachmentModel>DocId}"
+					fileName="{UploadAttachmentModel>Filename}" mimeType="{UploadAttachmentModel>Mimetype}" visibleEdit="false"
+					url="{UploadAttachmentModel>Url}" visibleDelete="{Header>/data/ApprovalButton}" selected="{UploadAttachmentModel>selected}">
+					<attributes>
+						<ObjectAttribute title="File Name : {UploadAttachmentModel>Filename}" text=" Uploaded by : {UploadAttachmentModel>UploadedBy}"
+							active="{UploadAttachmentModel>active}" press="onAttributePress"/>
+					</attributes>
+					<statuses>
+						<ObjectStatus title="{title}" text="{UploadAttachmentModel>text}" state="{UploadAttachmentModel>state}"/>
+					</statuses>
+				</UploadCollectionItem>
+			</items>
+		</UploadCollection>
+		<beginButton></beginButton>
+		<endButton>
+			<Button text="{i18n>Close}" press="onHandleCancelUpload" type="Reject"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

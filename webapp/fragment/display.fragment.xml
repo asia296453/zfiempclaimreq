@@ -1,0 +1,227 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+     xmlns:u="sap.ui.unified"
+    xmlns:custData="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+>
+
+    <VBox class="sapUiNoContentPadding sapUiNoMargin">
+       	<f:SimpleForm 
+			editable="true"
+			layout="ResponsiveGridLayout"
+			title=""
+			labelSpanXL="3"
+			labelSpanL="3"
+			labelSpanM="3"
+			labelSpanS="12"
+			adjustLabelSpan="false"
+			emptySpanXL="4"
+			emptySpanL="4"
+			emptySpanM="4"
+			emptySpanS="0"
+			columnsXL="1"
+			columnsL="1"
+			columnsM="1"
+			singleContainerFullSize="false" >
+			<f:content>
+			<Label text="{i18n>ExpenseRequestNo}" />
+			<HBox >
+				<Input value="{display>/results/Claimno}" enabled="{claimno>/results}" editable="{claimno>/results}"/>
+				<Button text="{i18n>Display}" press="onPressDisplay" type="Emphasized" class="zdisbtn"
+				visible="{claimno>/results}"/>
+			</HBox>
+				<!-- <Label text="{i18n>OnBehalfof}" />
+				<Text text="{display>/results/Onbehalf}"  />
+                <Text text="{userdetails>/results/Perna}">
+					<layoutData>
+						<l:GridData span="XL1 L2 M2 S4" />
+					</layoutData>
+				</Text> -->
+
+				<Label text="{i18n>EmployeeName}" />
+				<Text text="{display>/results/Pernr}"  />
+                <Text text="{display>/results/Perna}">
+					<layoutData>
+						<l:GridData span="XL1 L2 M2 S4" />
+					</layoutData>
+				</Text>
+
+				<Label text="{i18n>CostCentre}" />
+				<Text text="{display>/results/Kostl}"  />
+                <Text text="{display>/results/Ktext}">
+					<layoutData>
+						<l:GridData span="XL1 L2 M2 S4" />
+					</layoutData>
+				</Text>
+
+				
+				<Label text="{i18n>CreationDate}" />
+				<Text text="{path: 'display>/results/Crtdat', formatter: '.formatDate'}"></Text>
+                
+				<Label text="{i18n>ExpenseReimbursement}" />
+				<Text text="{display>/results/ExpType}"/>
+				<Text text="{display>/results/ExpName}">
+					<layoutData>
+						<l:GridData span="XL1 L2 M2 S4" />
+					</layoutData>
+				</Text>
+
+                <Label text="{i18n>GLAccountDescription}" />
+				<Text text="{display>/results/Saknr}" />
+                <Text text="{display>/results/Stext}">
+					<layoutData>
+						<l:GridData span="XL1 L2 M2 S4" />
+					</layoutData>
+				</Text>
+
+
+                <Label text="{i18n>ExpenseDate}" />
+				<Text text="{path: 'display>/results/Claimdat', formatter: '.formatDate'}"></Text>
+				
+
+                <Label text="{i18n>ExpenseAmount}" />
+				<Text text="{display>/results/Amt}" />
+
+                <Label text="{i18n>Currency}" />
+				<Text text="{display>/results/Curr}"  />
+
+                <Label text="{i18n>Comments}" />
+				<TextArea value="{display>/results/Comments}" 
+				editable="false" enabled="false" />
+
+				<Label
+                    text=""
+                />
+                <Button icon="sap-icon://attachment" text="Attachments" iconFirst="true"
+                    width="50%"
+                    press="ondisplayAttachments"
+                    type="Emphasized"
+                    
+                />
+			</f:content>
+		</f:SimpleForm>
+
+
+		<!-- <f:SimpleForm  
+			editable="true"
+			layout="ResponsiveGridLayout"
+			title="{i18n>ApproverComments}"
+			labelSpanXL="3"
+			labelSpanL="3"
+			labelSpanM="3"
+			labelSpanS="12"
+			adjustLabelSpan="false"
+			emptySpanXL="4"
+			emptySpanL="4"
+			emptySpanM="4"
+			emptySpanS="0"
+			columnsXL="1"
+			columnsL="1"
+			columnsM="1"
+			singleContainerFullSize="false" >
+			<f:content>
+			<Label text="{i18n>Approver1}" />
+				<Text text="{display>/results/Approver1}" />
+
+				<Label text="{i18n>Approver2}" />
+				<Text text="{display>/results/SupplierName}" />
+               
+			</f:content>
+		</f:SimpleForm> -->
+
+
+		<f:SimpleForm  
+			editable="true"
+			layout="ResponsiveGridLayout"
+			title=""
+			labelSpanXL="3"
+			labelSpanL="3"
+			labelSpanM="3"
+			labelSpanS="12"
+			adjustLabelSpan="false"
+			emptySpanXL="4"
+			emptySpanL="4"
+			emptySpanM="4"
+			emptySpanS="0"
+			columnsXL="1"
+			columnsL="1"
+			columnsM="1"
+			singleContainerFullSize="false" >
+			<f:content>
+			<Table
+                    items="{path:'approvallog>/results',templateShareable: false}"
+                >
+                    <columns>
+					<Column>
+                            <Text text="Approval Level" />
+                        </Column>
+                        <Column>
+                            <Text text="Approver" />
+                        </Column>
+                         <Column >
+                            <Text text="Approval Status" />
+                        </Column>
+                          <Column >
+                            <Text text="Approval Date" />
+                        </Column>
+                         <Column >
+                            <Text text="Approved Time" />
+                        </Column>
+                          <Column >
+                            <Text text="Comments" />
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                          <Text text='{approvallog>Zlevel}'/>
+						  <Text text='{approvallog>Apprname}'/>
+                          <Text text="{path: 'approvallog>Apprstat', type: 'sap.ui.model.type.String', formatter: '.formatstatusapp' }"/>
+                          <Text  text="{path: 'approvallog>Apprdat', type: 'sap.ui.model.type.String', formatter: '.DateFormatStr' }"/>
+                          <Text  text="{path: 'approvallog>Apprtime', type: 'sap.ui.model.type.String', formatter: '.timeformat' }"/>
+                           <Text text='{approvallog>Comments}'/>
+                          </ColumnListItem>
+                    </items>
+                   
+                </Table>   
+			</f:content>
+		</f:SimpleForm>
+
+
+		<f:SimpleForm  
+			editable="true"
+			layout="ResponsiveGridLayout"
+			title=""
+			labelSpanXL="3"
+			labelSpanL="3"
+			labelSpanM="3"
+			labelSpanS="12"
+			adjustLabelSpan="false"
+			emptySpanXL="4"
+			emptySpanL="4"
+			emptySpanM="4"
+			emptySpanS="0"
+			columnsXL="1"
+			columnsL="1"
+			columnsM="1"
+			singleContainerFullSize="false" >
+			<f:content>
+			<Label text="{i18n>Status}" />
+				<Text text="{path:'display>/results/Status', formatter:'.formatstatusapp'}" />
+
+				<Label text="{i18n>FIDocumentNo}" />
+				<Text text="{display>/results/Belnr}" />
+
+				<Label text="{i18n>RaisedBy}" />
+				<Text text="{display>/results/Pernr}"  />
+                <Text text="{display>/results/Crtby}">
+					<layoutData>
+						<l:GridData span="XL1 L2 M2 S4" />
+					</layoutData>
+				</Text>
+			</f:content>
+		</f:SimpleForm>
+    </VBox>
+    
+</core:FragmentDefinition>

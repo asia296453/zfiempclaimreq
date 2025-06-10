@@ -1,0 +1,13 @@
+<core:FragmentDefinition xmlns="sap.m"
+                         xmlns:core="sap.ui.core">
+    <SelectDialog 
+                  title="{i18n>ExpenseReimbursement}"
+                  search=".onSearchExpType"
+                  confirm="handleValueHelpExpType"
+                  cancel="onCloseExpType"
+                  items="{path:'ExpType>/results'}"
+				  multiSelect="false">
+        <StandardListItem title="{ExpType>ExpType}" description="{ExpType>ExpName}"/>
+    </SelectDialog>
+
+</core:FragmentDefinition>

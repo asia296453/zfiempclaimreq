@@ -1,0 +1,29 @@
+<mvc:View controllerName="zfiempclaimreq.controller.Main"
+     xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" 
+xmlns:uxap="sap.uxap" xmlns:core="sap.ui.core" xmlns:semantic="sap.m.semantic" xmlns:footerbar="sap.ushell.ui.footerbar" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+busyIndicatorDelay="0">
+	<semantic:DetailPage id="page" navButtonPress="onNavBack" title="{i18n>appTitle}" busy="{viewModel>/busy}">
+		<semantic:content>
+		<f:SimpleForm editable="true" layout="ResponsiveGridLayout" visible="{ViewVis>/data/create}">
+							<core:Fragment fragmentName="zfiempclaimreq.fragment.create" type="XML"/>	
+			</f:SimpleForm>	
+			<f:SimpleForm editable="true" layout="ResponsiveGridLayout" visible="{ViewVis>/data/display}">
+							<core:Fragment fragmentName="zfiempclaimreq.fragment.display" type="XML"/>	
+			</f:SimpleForm>	
+			
+		
+		
+						</semantic:content>
+						
+					<semantic:customFooterContent>
+					
+					<!-- <Button text="{i18n>Submit}" press="onStartUpload" type="Emphasized"
+                enabled="{Header>/data/editable}" visible="{ViewVis>/data/create}"/> -->
+					<Button text="{i18n>Submit}" press="onSubmit" type="Emphasized"
+                enabled="{Header>/data/editable}" visible="{ViewVis>/data/create}"/>
+					<!-- <Button text="{i18n>Save}" press="onSave" type="Emphasized"
+                enabled="{Header>/data/editable}" visible="{ViewVis>/data/create}"/> -->
+				    </semantic:customFooterContent>
+
+					</semantic:DetailPage>
+				</mvc:View>

@@ -1,0 +1,148 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+     xmlns:u="sap.ui.unified"
+    xmlns:custData="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+>
+
+    <VBox class="sapUiNoContentPadding sapUiNoMargin">
+       	<f:SimpleForm 
+			editable="true"
+			layout="ResponsiveGridLayout"
+			title=""
+			labelSpanXL="3"
+			labelSpanL="3"
+			labelSpanM="3"
+			labelSpanS="12"
+			adjustLabelSpan="false"
+			emptySpanXL="4"
+			emptySpanL="4"
+			emptySpanM="4"
+			emptySpanS="0"
+			columnsXL="1"
+			columnsL="1"
+			columnsM="1"
+			singleContainerFullSize="false" >
+			<f:content>
+			<Label text="{i18n>ExpenseRequestNo}" />
+				<Text text="{create>/results/Claimno}" />
+
+				<Label text="{i18n>OnBehalfof}"  visible="{ViewVis>/data/onbehalf}"/>
+				<Input  value="{create>/results/Onbehalf}"   change="onchangeOnbehalf" 
+				 visible="{ViewVis>/data/onbehalf}"
+				editable="{Header>/data/editable}"
+                enabled="{Header>/data/editable}"/>
+                <Text text="{userdetails>/results/Perna}"  visible="{ViewVis>/data/onbehalf}">
+					<layoutData>
+						<l:GridData span="XL1 L2 M2 S4" />
+					</layoutData>
+				</Text>
+
+				<Label text="{i18n>EmployeeName}"  visible="{ViewVis>/data/emp}"/>
+				<Input  value="{create>/results/Pernr}" 
+				 visible="{ViewVis>/data/emp}"
+				editable="false"
+                enabled="false"/>
+                <Text text="{userdetails>/results/Perna}"  visible="{ViewVis>/data/emp}">
+					<layoutData>
+						<l:GridData span="XL1 L2 M2 S4" />
+					</layoutData>
+				</Text>
+
+				<Label text="{i18n>CostCentre}" />
+				<Input value="{create>/results/Kostl}" 
+				editable="false"
+                enabled="false"/>
+                <Text text="{create>/results/Ktext}">
+					<layoutData>
+						<l:GridData span="XL1 L2 M2 S4" />
+					</layoutData>
+				</Text>
+
+				
+				<Label text="{i18n>CreationDate}" />
+				<DatePicker  value="{
+						'path': 'create>/results/Crtdat',
+						'type':'sap.ui.model.type.Date',
+						'formatOptions': {
+							'pattern': 'dd-MM-yyyy',
+                            'UTC': true
+						}				
+					}"    enabled="false" editable="false"/>
+
+
+                
+				<Label text="{i18n>ExpenseReimbursement}" />
+				<Input required="true"
+                value="{create>/results/ExpType}"
+				editable="{Header>/data/editable}"
+                enabled="{Header>/data/editable}" 
+                 showValueHelp="true"
+                    valueHelpRequest="onOpenExpType"
+                    valueHelpOnly="true"
+               />
+				<Text text="{create>/results/ExpName}">
+					<layoutData>
+						<l:GridData span="XL1 L2 M2 S4" />
+					</layoutData>
+				</Text>
+
+                <Label text="{i18n>GLAccountDescription}" />
+				<Text text="{create>/results/Saknr}" />
+                <Text text="{create>/results/Stext}">
+					<layoutData>
+						<l:GridData span="XL1 L2 M2 S4" />
+					</layoutData>
+				</Text>
+
+
+                <Label text="{i18n>ExpenseDate}" />
+				<DatePicker required="true"  value="{
+						'path': 'create>/results/Claimdat',
+						'type':'sap.ui.model.type.Date',
+						'formatOptions': {
+							'pattern': 'dd-MM-yyyy',
+                            'UTC': true
+						}				
+					}" 
+					editable="{Header>/data/editable}"
+                enabled="{Header>/data/editable}"
+				   />
+
+                <Label text="{i18n>ExpenseAmount}" />
+				<Input required="true" value="{create>/results/Amt}"  type="Number"
+				editable="{Header>/data/editable}"
+                enabled="{Header>/data/editable}"/>
+
+                <Label text="{i18n>Currency}" />
+				 <Select  editable="{Header>/data/editable}" required="true"
+                enabled="{Header>/data/editable}"
+                    forceSelection="false"
+						selectedKey="{create>/results/Curr}"
+						items="{
+							path: 'Currency>/results'
+						}">
+					<core:Item key="{Currency>Waers}" text="{Currency>Waers} {Currency>Ltext}" />
+				</Select>
+
+                <Label text="{i18n>Comments}" />
+				<TextArea value="{create>/results/Comments}" 
+				editable="{Header>/data/editable}"
+                enabled="{Header>/data/editable}" />
+
+				<Label
+                    text=""  required="true"
+                />
+                <Button icon="sap-icon://attachment" text="Attachments" iconFirst="true" 
+                    width="50%"
+                    press="onUploadAttachments"
+                    type="Emphasized"
+                    
+                />
+			</f:content>
+		</f:SimpleForm>
+    </VBox>
+    
+</core:FragmentDefinition>
