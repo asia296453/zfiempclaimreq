@@ -88,8 +88,36 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
            if(sValue === ''){
             MessageBox.error("Please enter Claim no");
            }else{
-            this.getOdata("/CLAIMREQSet(Claimno='" + sValue + "',Pernr='')","display", null);
+            //this.getOdata("/CLAIMREQSet(Claimno='" + sValue + "',Pernr='')","display", null);
             this.getOdata("/CRWFLOGSet","approvallog", oFilter);
+            this.getOdata("/CLAIMREQSet(Claimno='" + sValue + "',Pernr='')","display", null).then((response) => {
+                if(response.Status === 'RE'){
+                    this.getOwnerComponent().getModel("create").setProperty("/results", response);
+                    var sstr2 = {
+                        "create": true,
+                        "display": false,
+                        "onbehalf":false,
+                        "emp":true,
+                    }
+    
+                    this.getOwnerComponent().getModel("ViewVis").setProperty("/data", sstr2);
+                    this.getOwnerComponent().getModel("ViewVis").refresh(true);
+                    this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle = "Employee Claim Request";
+                    //this.getResourceBundle().refresh(true);
+                }
+                else{
+                    var sstr2 = {
+                        "create": false,
+                        "display": true,
+                        "onbehalf":false,
+                        "emp":false,
+                    }
+                    this.getOwnerComponent().getModel("ViewVis").setProperty("/data", sstr2);
+                    this.getOwnerComponent().getModel("ViewVis").refresh(true);
+                    this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle = "Employee Claim Request Display";
+                    //this.getResourceBundle().refresh(true);
+                }
+            });
             //this.readAllAttachmentData('', '',sValue);
            }
             
@@ -259,8 +287,8 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             }
             jQuery.sap.syncStyleClass("sapUiSizeCompact", this.getView(), this._oAttachmentDialog);
             this.getView().setBusy(true);
-
-            this.readAllAttachmentData(e, 'X','0');
+            var sclaimno = this.getOwnerComponent().getModel("create").getData().results.Claimno;
+            this.readAllAttachmentData(e, 'X',sclaimno);
             var i = this.getOwnerComponent().getModel("UploadAttachmentModel");
             i.setData({
                 ATTACHSet: []
@@ -376,7 +404,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             var sClaimno = this.getOwnerComponent().getModel("create").getData().results.Claimno ,
                 sListType = this.getModel("AttachmentType").sListType,
                 a = this.getModel("i18n");
-                debugger;
+                
             var szlevel = '0';
             var sserial = '0';
             var i = new sap.m.UploadCollectionParameter({
@@ -452,7 +480,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
 
 		onStartUpload: function(oEvent) {
 			var oUploadCollection = this.byId("idUploadCollectionAttachments");
-            debugger;
+            
 			var cFiles = oUploadCollection.getItems().length;
 			var uploadInfo = cFiles + " file(s)";
 

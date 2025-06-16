@@ -107,14 +107,14 @@ sap.ui.define([
         },
 
         setinitialmodels1:function(sclaimno,stype){
-            debugger;
+            
             var oData = [];
             var ddate = new Date();
             var sTimeformat = sap.ui.core.format.DateFormat.getDateInstance({
                 pattern : "PThh'H'mm'M'ss'S'"
             });
             var scurtime = sTimeformat.format(ddate);
-            debugger;
+            
             if (stype === 'manage') {
                 this.getOwnerComponent().getModel("claimno").setProperty("/results", false);
                 this.getOdata("/CLAIMREQSet(Claimno='',Pernr='')", "create", null).then((response) => {
@@ -145,6 +145,12 @@ sap.ui.define([
             if (stype === 'display') {
                 
                 this.getOdata("/CLAIMREQSet(Claimno='',Pernr='')", "display", null).then((response) => {
+                    if(response.Pernr === '00000000'){
+                        this.getOwnerComponent().getModel("display").getData().results.Pernr = '';
+                    }
+                    if(response.Amt === '0.00'){
+                        this.getOwnerComponent().getModel("display").getData().results.Amt = '';
+                    }
                     this.getOwnerComponent().getModel("display").getData().results.Crtdat = null;
                     this.getOwnerComponent().getModel("display").getData().results.Crttime = null;
                     this.getOwnerComponent().getModel("display").refresh(true);
@@ -162,7 +168,40 @@ sap.ui.define([
             this.getOwnerComponent().getModel("Header").setProperty("/data", sstr1);
        
         },
+        onNavBack: function () {
+            var sstr2 = {
+                "create": false,
+                "display": true,
+                "onbehalf":false,
+                "emp":false,
+            }
+            this.getOwnerComponent().getModel("ViewVis").setProperty("/data", sstr2);
+            this.getOwnerComponent().getModel("ViewVis").refresh(true);
+            this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle = "Employee Claim Request Display";
+            this.getOdata("/CLAIMREQSet(Claimno='',Pernr='')", "display", null).then((response) => {
+                if(response.Pernr === '00000000'){
+                    this.getOwnerComponent().getModel("display").getData().results.Pernr = '';
+                }
+                if(response.Amt === '0.00'){
+                    this.getOwnerComponent().getModel("display").getData().results.Amt = '';
+                }
+                this.getOwnerComponent().getModel("display").getData().results.Crtdat = null;
+                this.getOwnerComponent().getModel("display").getData().results.Crttime = null;
+                this.getOwnerComponent().getModel("display").refresh(true);
+                this.getOwnerComponent().getModel("create").setProperty("/results", []);
+                this.getOwnerComponent().getModel("create").refresh(true);
+                this.getOwnerComponent().getModel("approvallog").setProperty("/results", []);
+                this.getOwnerComponent().getModel("approvallog").refresh(true);
 
+                
+           
+            });
+            
+            var sstr1 = {
+                "editable": true
+            }
+            this.getOwnerComponent().getModel("Header").setProperty("/data", sstr1);
+        },
         setinitialdata:function(sclaimno){           
             if(window.location.href.indexOf("zfiempclaimreq-display") !== -1 || sclaimno !== ''){
                 var sstr2 = {
@@ -231,7 +270,7 @@ sap.ui.define([
                 pattern : "PThh'H'mm'M'ss'S'"
             });
             var scurtime = sTimeformat.format(ddate);
-            debugger;
+            
             if(window.location.href.indexOf("zfiempclaimreq-create") !== -1 ||
                 window.location.href.indexOf("zfiempclaimreq-manage") !== -1){
             this.getOdata("/USREMPSet(Usrid='" + this.suser + "')","user", null).then((res) => {
@@ -380,7 +419,7 @@ sap.ui.define([
                         this.getModel().create("/CLAIMREQSet", oPayload, {
                             method: "POST",
                             success: function (oData,res) {
-                                debugger;
+                                
                                 this.showBusy(false); 
                                 if(oData.Claimno !== ''){  
                                     this.getOwnerComponent().getModel("create").setProperty("/results", oData);
@@ -405,7 +444,7 @@ sap.ui.define([
 
                             }.bind(this),
                             error: function (oError) {
-                                debugger;
+                                
                                 this.showBusy(false);
                                 var msg = JSON.parse(oError.responseText).error.message.value;
                                     MessageBox.error(msg); 

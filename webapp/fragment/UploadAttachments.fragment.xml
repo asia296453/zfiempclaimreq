@@ -9,11 +9,11 @@
 			>
 			<!--uploadEnabled="{= (${Status} !== 'C' &amp;&amp; ${Status} !== 'I') &amp;&amp; ${Adminstatus} !== 'A'}"-->
 			<items>
-				<UploadCollectionItem id="idUploadCollectionItemAddNew" documentId="{UploadAttachmentModel>DocId}"
-					fileName="{UploadAttachmentModel>Filename}" mimeType="{UploadAttachmentModel>Mimetype}" visibleEdit="false"
-					url="{UploadAttachmentModel>Url}" visibleDelete="{Header>/data/ApprovalButton}" selected="{UploadAttachmentModel>selected}">
+				<UploadCollectionItem   documentId="{UploadAttachmentModel>DocId}"
+					fileName="{UploadAttachmentModel>FileName}" mimeType="{UploadAttachmentModel>Mimetype}" visibleEdit="false"
+					url="{UploadAttachmentModel>Url}" visibleDelete="false" selected="{UploadAttachmentModel>selected}">
 					<attributes>
-						<ObjectAttribute title="File Name : {UploadAttachmentModel>Filename}" text=" Uploaded by : {UploadAttachmentModel>UploadedBy}"
+						<ObjectAttribute title="File Name : {UploadAttachmentModel>FileName}" text=" Uploaded by : {UploadAttachmentModel>UpldBy}"
 							active="{UploadAttachmentModel>active}" press="onAttributePress"/>
 					</attributes>
 					<statuses>

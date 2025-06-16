@@ -2,7 +2,7 @@
      xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" 
 xmlns:uxap="sap.uxap" xmlns:core="sap.ui.core" xmlns:semantic="sap.m.semantic" xmlns:footerbar="sap.ushell.ui.footerbar" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
 busyIndicatorDelay="0">
-	<semantic:DetailPage id="page" navButtonPress="onNavBack" title="{i18n>appTitle}" busy="{viewModel>/busy}">
+	<semantic:DetailPage id="page" showNavButton="{= ${create>/results/Status}==='RE'? true : false}" navButtonPress="onNavBack" title="{i18n>appTitle}" busy="{viewModel>/busy}">
 		<semantic:content>
 		<f:SimpleForm editable="true" layout="ResponsiveGridLayout" visible="{ViewVis>/data/create}">
 							<core:Fragment fragmentName="zfiempclaimreq.fragment.create" type="XML"/>	
