@@ -145,6 +145,7 @@ sap.ui.define([
             if (stype === 'display') {
                 
                 this.getOdata("/CLAIMREQSet(Claimno='',Pernr='')", "display", null).then((response) => {
+                    if(sclaimno === ''){
                     if(response.Pernr === '00000000'){
                         this.getOwnerComponent().getModel("display").getData().results.Pernr = '';
                     }
@@ -153,7 +154,8 @@ sap.ui.define([
                     }
                     this.getOwnerComponent().getModel("display").getData().results.Crtdat = null;
                     this.getOwnerComponent().getModel("display").getData().results.Crttime = null;
-                    this.getOwnerComponent().getModel("display").refresh(true);
+                    this.getOwnerComponent().getModel("display").refresh(true);                        
+                }
                 });
                 if(sclaimno === ''){
                     this.getOwnerComponent().getModel("claimno").setProperty("/results", true);

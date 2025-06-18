@@ -2,3 +2,6 @@
 .zdisbtn{
     margin-left: 0.5rem;
 }
+.sapMDialog.sapMMessageDialog{
+    margin-top: 10rem !important;
+}

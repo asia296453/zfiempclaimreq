@@ -33,6 +33,7 @@ sap.ui.define([
             this.setModel(new sap.ui.model.json.JSONModel(), "AttachmentType");
             this.setModel(new sap.ui.model.json.JSONModel(), "claimno");
             this.setModel(new sap.ui.model.json.JSONModel(), "usertype");
+            this.setModel(new sap.ui.model.json.JSONModel(), "Message");
             // enable routing
             this.getRouter().initialize();
             //this.getuserdtls();

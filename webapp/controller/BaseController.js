@@ -81,6 +81,13 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             this.getOdata("/EXPTYPESet","ExpType", [oFilter]);
         },
         onPressDisplay: function (oEvent) {
+            var suser = '';
+            if(sap.ushell !== undefined){
+                suser = sap.ushell.Container.getService("UserInfo").getId();
+            }
+            if(suser === ''){
+                suser = 'NTT_VENU';
+            }
             var sValue = this.getView().getModel("display").getData().results.Claimno;
             
             var oFilter = new sap.ui.model.Filter("Claimno", sap.ui.model.FilterOperator.EQ, sValue);
@@ -91,7 +98,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             //this.getOdata("/CLAIMREQSet(Claimno='" + sValue + "',Pernr='')","display", null);
             this.getOdata("/CRWFLOGSet","approvallog", oFilter);
             this.getOdata("/CLAIMREQSet(Claimno='" + sValue + "',Pernr='')","display", null).then((response) => {
-                if(response.Status === 'RE'){
+                if(response.Status === 'RE' && suser === response.Crtby){
                     this.getOwnerComponent().getModel("create").setProperty("/results", response);
                     var sstr2 = {
                         "create": true,
@@ -146,7 +153,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
         },
         formatstatusapp: function (sText) {
             var sTxt = '';
-            if (sText === '' || sText === 'SAVE' || sText === 'IN') {
+            if (sText === 'SAVE' || sText === 'IN') {
                 sTxt = 'In Process';
             } else if (sText === 'SUFA') {
                 sTxt = 'Submitted for Approval';
