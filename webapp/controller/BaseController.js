@@ -69,7 +69,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                 bflag = false;
             }
             else if(ovalue.Ctext === ''){
-                MessageBox.error("Please enter Claim Description");
+                MessageBox.error(" Please enter  Description");
                 bflag = false;
             }
             else if(this.getModel("UploadAttachmentModel").getData().ATTACHSet === undefined){
