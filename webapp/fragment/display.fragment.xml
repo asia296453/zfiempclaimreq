@@ -87,6 +87,11 @@
                 <Label text="{i18n>Currency}" />
 				<Text text="{display>/results/Curr}"  />
 
+				<Label text="{i18n>desc}" />
+				<TextArea value="{display>/results/Ctext}" 
+				editable="false"
+                enabled="false" />
+
                 <Label text="{i18n>Comments}" />
 				<TextArea value="{display>/results/Comments}" 
 				editable="false" enabled="false" />

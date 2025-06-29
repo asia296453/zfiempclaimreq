@@ -24,7 +24,7 @@ sap.ui.define([
             this.getOwnerComponent().getModel("create").setProperty("/userdetails", []);
 
             var sclaimno = "";
-           
+           debugger;
             if(this.getOwnerComponent().getComponentData() !== undefined &&
                 this.getOwnerComponent().getComponentData().startupParameters.Claimno !== undefined){
                 sclaimno = this.getOwnerComponent().getComponentData().startupParameters.Claimno[0];

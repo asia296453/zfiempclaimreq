@@ -68,6 +68,10 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                 MessageBox.error("Please enter Currency");
                 bflag = false;
             }
+            else if(ovalue.Ctext === ''){
+                MessageBox.error("Please enter Claim Description");
+                bflag = false;
+            }
             else if(this.getModel("UploadAttachmentModel").getData().ATTACHSet === undefined){
                 MessageBox.error("Attachment is mandatory");
                 bflag = false;

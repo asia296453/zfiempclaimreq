@@ -127,10 +127,17 @@
 					<core:Item key="{Currency>Waers}" text="{Currency>Waers} {Currency>Ltext}" />
 				</Select>
 
+				<Label text="{i18n>desc}" />
+				<TextArea value="{create>/results/Ctext}" required="true"
+				editable="{Header>/data/editable}"
+                enabled="{Header>/data/editable}" maxLength="50"/>
+
                 <Label text="{i18n>Comments}" />
 				<TextArea value="{create>/results/Comments}" 
 				editable="{Header>/data/editable}"
                 enabled="{Header>/data/editable}" />
+
+
 
 				<Label
                     text=""  required="true"

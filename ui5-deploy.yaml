@@ -20,7 +20,7 @@ builder:
         app:
           name: ZFIEMPCLAIMREQ
           description: zfiempclaimreq
-          package: ZFIORI_PKG
-          transport: DE1K907994
+          package: ZFIORI_FI
+          transport:  DE1K908062
         exclude:
           - /test/
