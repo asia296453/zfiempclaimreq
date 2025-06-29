@@ -29,7 +29,20 @@ sap.ui.define([
                 this.getOwnerComponent().getComponentData().startupParameters.Claimno !== undefined){
                 sclaimno = this.getOwnerComponent().getComponentData().startupParameters.Claimno[0];
             }
-            
+            if(window.location.href.indexOf("zfiempclaimreq-lookup") !== -1){
+                if(window.location.href.indexOf("Claimno") !== -1){
+                    var complete_url = window.location.href;
+                    var pieces = complete_url.split("?");
+                    var params = pieces[1].split("&");
+                    $.each(params, function (key, value) {
+                        var param_value = value.split("=");
+                        if(param_value[0]==='Claimno'){
+                            sclaimno = param_value[1];
+                        }
+                    });
+                }
+            }            
+            debugger;
             var stype = '';
             if(window.location.href.indexOf("zfiempclaimreq-display") !== -1){
                 stype = "display";
