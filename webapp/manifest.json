@@ -30,9 +30,9 @@
     "crossNavigation": {
       "inbounds": {
         "empclaimreq-display": {
-          "semanticObject": "empclaimreq",
+          "semanticObject": "zfiempclaimreq",
           "action": "display",
-          "title": "{{empclaimreq-display.flpTitle}}",
+          "title": "{{flpTitle}}",
           "signature": {
             "parameters": {},
             "additionalParameters": "allowed"
@@ -120,7 +120,7 @@
       }
     },
     "rootView": {
-      "viewName": "zfiempclaimreq.view.App",
+      "viewName": "zfiempclaimreq.view.Main",
       "type": "XML",
       "id": "App",
       "async": true
