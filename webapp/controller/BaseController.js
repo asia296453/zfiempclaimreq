@@ -76,6 +76,12 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                 MessageBox.error("Attachment is mandatory");
                 bflag = false;
             }
+            else if(this.getModel("UploadAttachmentModel").getData().ATTACHSet !== undefined
+                && this.getOwnerComponent().getModel("attachflag").getProperty("/flag") !== undefined
+                 && this.getOwnerComponent().getModel("attachflag").getProperty("/flag") === ''){
+                MessageBox.error("Attachment is mandatory");
+                bflag = false;
+            }
 
             return bflag;
         },
@@ -270,7 +276,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             var e = 'AT';
             var t = this.getView(),
                 a = this.getModel("i18n");
-            this._oAttachmentDialog = t.byId("idDialogUploadAttachments11");
+         //   this._oAttachmentDialog = t.byId("idDialogUploadAttachments11");
             var LabelText = e;
             if (!this._oAttachmentDialog) {
                 this._oAttachmentDialog = sap.ui.xmlfragment(t.getId(), "zfiempclaimreq.fragment.DisplayAttachments", this);
@@ -290,7 +296,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             var e = 'AT';
             var t = this.getView(),
                 a = this.getModel("i18n");
-            this._oAttachmentDialog = t.byId("idDialogUploadAttachments");
+          //  this._oAttachmentDialog = t.byId("idDialogUploadAttachments");
             var LabelText = e;
             if (!this._oAttachmentDialog) {
                 this._oAttachmentDialog = sap.ui.xmlfragment(t.getId(), "zfiempclaimreq.fragment.UploadAttachments", this);
@@ -392,14 +398,10 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             
         },
         onHandleCancelUpload1: function (e) {
-            // this.readAllAttachmentData('', '');
-             this._oAttachmentDialog.close();
-          //  this._oAttachmentDialog.destroy();
+            this._oAttachmentDialog.close();
          },
         onHandleCancelUpload: function (e) {
-           // this.readAllAttachmentData('', '');
             this._oAttachmentDialog.close();
-           // this._oAttachmentDialog.destroy();
         },
 
         //BOC-EX-GOME
@@ -440,10 +442,12 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             e.getParameters().addHeaderParameter(s)
         },
         onUploadCompleteListData: function (e) {
+            
             this.readAllAttachmentData(this.getModel("AttachmentType").sListType, 'X');
         },
         onChangeListData: function (e) {
             //BOC-EX-GOME
+            this.getOwnerComponent().getModel("attachflag").setProperty("/flag", 'X');
             var t = "/sap/opu/odata/sap/ZFI_EMP_CLAIM_REQ_SRV",
                 //EOC-EX-GOME
                 a = {

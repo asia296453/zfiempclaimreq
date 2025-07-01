@@ -9,6 +9,7 @@ sap.ui.define([
 
     return BaseController.extend("zfiempclaimreq.controller.Main", {
         onInit() {
+            this.getOwnerComponent().getModel("attachflag").setProperty("/flag", '');
             this.suser = '';
             if(sap.ushell !== undefined){
                 this.suser = sap.ushell.Container.getService("UserInfo").getId();
