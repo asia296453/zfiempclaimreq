@@ -25,7 +25,7 @@ sap.ui.define([
             this.getOwnerComponent().getModel("create").setProperty("/userdetails", []);
 
             var sclaimno = "";
-           debugger;
+            
             if(this.getOwnerComponent().getComponentData() !== undefined &&
                 this.getOwnerComponent().getComponentData().startupParameters.Claimno !== undefined){
                 sclaimno = this.getOwnerComponent().getComponentData().startupParameters.Claimno[0];
@@ -42,8 +42,8 @@ sap.ui.define([
                         }
                     });
                 }
-            }            
-            debugger;
+            }         
+            
             var stype = '';
             if(window.location.href.indexOf("zfiempclaimreq-display") !== -1){
                 stype = "display";
@@ -59,6 +59,7 @@ sap.ui.define([
             this.setinitialmodels1(sclaimno,stype);
             this.setinitialdata1(sclaimno,stype);
         },
+
         setinitialdata1:function(sclaimno,stype){  
                     
             if(stype === 'display' || sclaimno !== ''){
@@ -79,7 +80,7 @@ sap.ui.define([
                         }
                         this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle ='';
                         var oFilter = new sap.ui.model.Filter("Claimno", sap.ui.model.FilterOperator.EQ, sclaimno);
-                        this.getOdata("/CLAIMREQSet(Claimno='" + sclaimno + "',Pernr='')","display", null);
+                        this.getOdata("/CLAIMREQSet(Claimno='" + sclaimno + "')","display", null,true);
                         this.getOdata("/CRWFLOGSet","approvallog", oFilter);
                     }
 
@@ -131,7 +132,7 @@ sap.ui.define([
             
             if (stype === 'manage') {
                 this.getOwnerComponent().getModel("claimno").setProperty("/results", false);
-                this.getOdata("/CLAIMREQSet(Claimno='',Pernr='')", "create", null).then((response) => {
+                this.getOdata("/CLAIMREQSet(Claimno='')", "create", null,true).then((response) => {
                     this.getOwnerComponent().getModel("create").getData().results.Crtdat = null;
                     this.getOwnerComponent().getModel("create").getData().results.Crttime = null;
                     this.getOwnerComponent().getModel("create").refresh(true);
@@ -139,7 +140,7 @@ sap.ui.define([
             }
             if (stype === 'create') {
                 this.getOwnerComponent().getModel("claimno").setProperty("/results", false);
-                this.getOdata("/CLAIMREQSet(Claimno='',Pernr='')", "create", null).then((response) => {
+                this.getOdata("/CLAIMREQSet(Claimno='')", "create", null,true).then((response) => {
                     this.getOdata("/USREMPSet(Usrid='" + this.suser + "')", "user", null).then((res) => {
                         this.getOdata("/EMPDTSet(Pernr='" + res.Pernr + "')", "userdetails", null).then((res1) => {
                             if (res1.Kostl === '') {
@@ -158,7 +159,7 @@ sap.ui.define([
             }
             if (stype === 'display') {
                 
-                this.getOdata("/CLAIMREQSet(Claimno='',Pernr='')", "display", null).then((response) => {
+                this.getOdata("/CLAIMREQSet(Claimno='')", "display", null,true).then((response) => {
                     if(sclaimno === ''){
                     if(response.Pernr === '00000000'){
                         this.getOwnerComponent().getModel("display").getData().results.Pernr = '';
@@ -184,6 +185,49 @@ sap.ui.define([
             this.getOwnerComponent().getModel("Header").setProperty("/data", sstr1);
        
         },
+        getnewrow:function(){
+            this.showBusy(true);
+            return new Promise((resolve, reject) => {
+            this.getOwnerComponent().getModel().read("/CLAIMREQSet('')/ClaimToItems", {
+                success: function (oData) {
+                    this.showBusy(false);
+                    oData.results[0].Claimno = '0';
+                    resolve(oData.results);
+                }.bind(this),
+                error: function (oError) {
+                    this.showBusy(false);
+                    var msg = JSON.parse(oError.responseText).error.message.value;
+                    MessageBox.error(msg);                    
+                    reject();
+                }.bind(this)
+            });
+        });
+        },
+        onPressAddRow: function (e)
+        {
+            this.getnewrow().then(function(response){
+                var sData = response[0];
+                var odata = [];
+                if(this.getView().getModel("item").getProperty("/results") !== undefined){
+                    odata=this.getView().getModel("item").getProperty("/results");
+                }
+                odata.push(sData);
+                odata.forEach(function (item, index) {
+                        item.Claimitem = (index + 1).toString();
+                    });
+                this.getView().getModel("item").setProperty("/results", odata);
+                
+            }.bind(this));
+        },
+
+        deleteRow: function (oEvent) {
+            debugger;
+            var ideleteRecord = oEvent.getSource().getParent().getId().split("-");
+            ideleteRecord=ideleteRecord[ideleteRecord.length - 1];
+            var odata = this.getView().getModel("item").getProperty("/results");
+            odata.splice(parseInt(ideleteRecord), 1); //removing 1 record from i th index.
+            this.getView().getModel("item").refresh(true);
+        },
         onNavBack: function () {
             var sstr2 = {
                 "create": false,
@@ -194,7 +238,7 @@ sap.ui.define([
             this.getOwnerComponent().getModel("ViewVis").setProperty("/data", sstr2);
             this.getOwnerComponent().getModel("ViewVis").refresh(true);
             this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle = "Employee Claim Request Display";
-            this.getOdata("/CLAIMREQSet(Claimno='',Pernr='')", "display", null).then((response) => {
+            this.getOdata("/CLAIMREQSet(Claimno='')", "display", null,true).then((response) => {
                 if(response.Pernr === '00000000'){
                     this.getOwnerComponent().getModel("display").getData().results.Pernr = '';
                 }
@@ -237,7 +281,7 @@ sap.ui.define([
                         }
                         this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle ='';
                         var oFilter = new sap.ui.model.Filter("Claimno", sap.ui.model.FilterOperator.EQ, sclaimno);
-                        this.getOdata("/CLAIMREQSet(Claimno='" + sclaimno + "',Pernr='')","display", null);
+                        this.getOdata("/CLAIMREQSet(Claimno='" + sclaimno + "')","display", null,true);
                         this.getOdata("/CRWFLOGSet","approvallog", oFilter);
                     }
 
@@ -392,6 +436,8 @@ sap.ui.define([
             if (bflag) {
                 var oPayload = this.getOwnerComponent().getModel("create").getData().results;
                 oPayload.Status = 'CR';
+                oPayload.ClaimToItems = this.getOwnerComponent().getModel("item").getData().results;
+                debugger;
                 this.showBusy(true);
                 this.getModel().create("/CLAIMREQSet", oPayload, {
                     method: "POST",
@@ -431,7 +477,9 @@ sap.ui.define([
                     if (sButton == "OK") {                        
                         var oPayload = this.getOwnerComponent().getModel("create").getData().results;
                         oPayload.Status = 'SU';
-                        this.showBusy(true);                        
+                        oPayload.ClaimToItems = this.getOwnerComponent().getModel("item").getData().results;
+                        this.showBusy(true);  
+                        debugger;                      
                         this.getModel().create("/CLAIMREQSet", oPayload, {
                             method: "POST",
                             success: function (oData,res) {

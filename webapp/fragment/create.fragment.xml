@@ -74,7 +74,7 @@
 
 
                 
-				<Label text="{i18n>ExpenseReimbursement}" />
+				<!-- <Label text="{i18n>ExpenseReimbursement}" />
 				<Input required="true"
                 value="{create>/results/ExpType}"
 				editable="{Header>/data/editable}"
@@ -82,7 +82,7 @@
                  showValueHelp="true"
                     valueHelpRequest="onOpenExpType"
                     valueHelpOnly="true"
-               />
+               /> 
 				<Text text="{create>/results/ExpName}">
 					<layoutData>
 						<l:GridData span="XL1 L2 M2 S4" />
@@ -95,7 +95,7 @@
 					<layoutData>
 						<l:GridData span="XL1 L2 M2 S4" />
 					</layoutData>
-				</Text>
+				</Text>-->
 
 
                 <Label text="{i18n>ExpenseDate}" />
@@ -111,10 +111,10 @@
                 enabled="{Header>/data/editable}"
 				   />
 
-                <Label text="{i18n>ExpenseAmount}" />
+                <!-- <Label text="{i18n>ExpenseAmount}" />
 				<Input required="true" value="{create>/results/Amt}"  type="Number"
 				editable="{Header>/data/editable}"
-                enabled="{Header>/data/editable}"/>
+                enabled="{Header>/data/editable}"/> -->
 
                 <Label text="{i18n>Currency}" />
 				 <Select  editable="{Header>/data/editable}" required="true"
@@ -148,9 +148,55 @@
                     type="Emphasized"
                     
                 />
-				
-			</f:content>
+				</f:content>
 		</f:SimpleForm>
+				<Table id="itemtable" items="{path:'item>/results',templateShareable: false}"
+                >
+                <headerToolbar>
+				<OverflowToolbar style="Clear"><ToolbarSpacer />						
+							<Button  text="Add" type="Emphasized" press="onPressAddRow"  enabled="{Header>/data/editable}"/>
+				
+					</OverflowToolbar>	</headerToolbar>
+                    <columns>
+					 <Column width="5%" ><Text text=""/></Column>
+					 
+                        <Column >
+                            <Text text="{i18n>ExpenseReimbursement}"  />
+                        </Column>
+						 <Column >
+                            <Text text="Description" />
+                        </Column>
+                        <Column >
+                            <Text text="{i18n>GLAccountDescription}" />
+                        </Column>
+						<Column >
+                            <Text text="Description" />
+                        </Column>
+                        <Column  >
+                            <Text text="{i18n>ExpenseAmount}" />
+                        </Column>
+                       
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+						<Button icon="sap-icon://delete" press="deleteRow" type="Reject"
+							enabled="{Header>/data/editable}"/>
+						 <Input required="true"
+							value="{item>Exptype}"
+							editable="{Header>/data/editable}"
+							enabled="{Header>/data/editable}" 
+							 showValueHelp="true"
+								valueHelpRequest="onOpenExpType"
+								valueHelpOnly="true"
+						   />
+						  <Text text='{item>Expname}'></Text>
+						   <Text text='{item>Saknr}'></Text>
+						   <Text text='{item>Stext}'></Text>
+                          <Input value='{item>Amt}' type="Number"  enabled="{Header>/data/editable}" ></Input>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+			
     </VBox>
     
 </core:FragmentDefinition>

@@ -33,8 +33,14 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             return this.getOwnerComponent().getModel("i18n").getResourceBundle()
         },
 
-
+        onCloseExpType: function (oEvent) {
+            this.irowindex = '';
+            this.ExpType.close();
+        },
         onOpenExpType: function (oEvent) {
+            var irow = oEvent.getParameter("id").split("-");
+            var irowindex = irow[irow.length-1];
+            this.irowindex = irowindex;
             if (!this.ExpType) {
                 this.ExpType = sap.ui.xmlfragment("zfiempclaimreq.fragment.ExpType", this);
                 this.getView().addDependent(this.ExpType);
@@ -52,18 +58,18 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                 MessageBox.error("Please enter Cost Centre");
                 bflag = false;
             }
-            else if(ovalue.ExpType === null || ovalue.ExpType === ''){
-                MessageBox.error("Please enter Expense/Reimbursement");
-                bflag = false;
-            }
+            // else if(ovalue.ExpType === null || ovalue.ExpType === ''){
+            //     MessageBox.error("Please enter Expense/Reimbursement");
+            //     bflag = false;
+            // }
             else if(ovalue.Claimdat === null || ovalue.Claimdat === ''){
                 MessageBox.error("Please enter Expense Date");
                 bflag = false;
             }
-            else if(ovalue.Amt === ''){
-                MessageBox.error("Please enter Expense Amount");
-                bflag = false;
-            }
+            // else if(ovalue.Amt === ''){
+            //     MessageBox.error("Please enter Expense Amount");
+            //     bflag = false;
+            // }
             else if(ovalue.Curr === ''){
                 MessageBox.error("Please enter Currency");
                 bflag = false;
@@ -82,7 +88,22 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                 MessageBox.error("Attachment is mandatory");
                 bflag = false;
             }
-
+            else if(this.getView().getModel("item").getData().results === undefined){
+                MessageBox.error("Please enter Expense/Reimbursement");
+                bflag = false;
+            }
+            else if(this.getView().getModel("item").getData().results !== undefined){
+                this.getView().getModel("item").getData().results.forEach(function (item, index) {
+                    if(item.Exptype === ''){
+                        MessageBox.error("Please enter Expense/Reimbursement");
+                        bflag = false;
+                    }else if(item.Amt === '0.000'){
+                        MessageBox.error("Please enter Expense Amount");
+                        bflag = false;
+                    }
+                });
+            }
+            debugger;
             return bflag;
         },
         onSearchExpType: function (oEvent) {
@@ -105,9 +126,9 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
            if(sValue === ''){
             MessageBox.error("Please enter Claim no");
            }else{
-            //this.getOdata("/CLAIMREQSet(Claimno='" + sValue + "',Pernr='')","display", null);
+            //this.getOdata("/CLAIMREQSet(Claimno='" + sValue + "')","display", null);
             this.getOdata("/CRWFLOGSet","approvallog", oFilter);
-            this.getOdata("/CLAIMREQSet(Claimno='" + sValue + "',Pernr='')","display", null).then((response) => {
+            this.getOdata("/CLAIMREQSet(Claimno='" + sValue + "')","display", null,true).then((response) => {
                 if(response.Status === 'RE' && suser === response.Crtby){
                     this.getOwnerComponent().getModel("create").setProperty("/results", response);
                     var sstr2 = {
@@ -147,12 +168,16 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                    // filters: [oFilter],
                     success: function (oData) {
                         this.showBusy(false);
-                        
-                        this.getView().getModel("create").getData().results.ExpType = oData.ExpType ;
-                        this.getView().getModel("create").getData().results.ExpName = oData.ExpName ;
-                        this.getView().getModel("create").getData().results.Saknr = oData.Saknr;
-                        this.getView().getModel("create").getData().results.Stext = oData.Txt50;
-                        this.getView().getModel("create").refresh(true);
+                        this.getView().byId("itemtable").getItems()[this.irowindex].getCells()[1].setValue( oData.ExpType);
+                        this.getView().byId("itemtable").getItems()[this.irowindex].getCells()[2].setText( oData.ExpName);
+                        this.getView().byId("itemtable").getItems()[this.irowindex].getCells()[3].setText( oData.Saknr);
+                        this.getView().byId("itemtable").getItems()[this.irowindex].getCells()[4].setText( oData.Txt50);
+                        // this.getView().getModel("create").getData().results.ExpType = oData.ExpType ;
+                        // this.getView().getModel("create").getData().results.ExpName = oData.ExpName ;
+                        // this.getView().getModel("create").getData().results.Saknr = oData.Saknr;
+                        // this.getView().getModel("create").getData().results.Stext = oData.Txt50;
+                        // this.getView().getModel("create").refresh(true);
+                        this.irowindex = '';
                     }.bind(this),
                     error: function (oError) {
                         this.showBusy(false);
@@ -225,11 +250,18 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             }
         }
         },
-        getOdata: function (surl, smodelname, ofilter) {
+        getOdata: function (surl, smodelname, ofilter,sexpand) {
+            var sparam = '';               
+                if(sexpand !== undefined && sexpand === true){
+                    sparam = "ClaimToItems";
+                }
             return new Promise((resolve, reject) => {
             if (ofilter === null) {
                 this.showBusy(true);
                 this.getOwnerComponent().getModel().read(surl, {
+                    urlParameters: {
+                        "$expand": sparam
+                    },
                     success: function (oData) {
                         this.showBusy(false);
                         if(oData.results !== undefined){
@@ -237,6 +269,9 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                             resolve(oData.results);
                         }else{
                             this.getModel(smodelname).setProperty("/results", oData);
+                            if(oData.ClaimToItems !== undefined && oData.ClaimToItems.results.length > 0){
+                                this.getModel("item").setProperty("/results", oData.ClaimToItems.results);
+                            }
                             resolve(oData);
                         }
                         

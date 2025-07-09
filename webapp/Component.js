@@ -35,6 +35,7 @@ sap.ui.define([
             this.setModel(new sap.ui.model.json.JSONModel(), "usertype");
             this.setModel(new sap.ui.model.json.JSONModel(), "Message");
             this.setModel(new sap.ui.model.json.JSONModel(), "attachflag");
+            this.setModel(new sap.ui.model.json.JSONModel(), "item");
             // enable routing
             this.getRouter().initialize();
             //this.getuserdtls();

@@ -60,7 +60,7 @@
 				<Label text="{i18n>CreationDate}" />
 				<Text text="{path: 'display>/results/Crtdat', formatter: '.formatDate'}"></Text>
                 
-				<Label text="{i18n>ExpenseReimbursement}" />
+				<!-- <Label text="{i18n>ExpenseReimbursement}" />
 				<Text text="{display>/results/ExpType}"/>
 				<Text text="{display>/results/ExpName}">
 					<layoutData>
@@ -74,15 +74,15 @@
 					<layoutData>
 						<l:GridData span="XL1 L2 M2 S4" />
 					</layoutData>
-				</Text>
+				</Text> -->
 
 
                 <Label text="{i18n>ExpenseDate}" />
 				<Text text="{path: 'display>/results/Claimdat', formatter: '.formatDate'}"></Text>
 				
 
-                <Label text="{i18n>ExpenseAmount}" />
-				<Text text="{display>/results/Amt}" />
+                <!-- <Label text="{i18n>ExpenseAmount}" />
+				<Text text="{display>/results/Amt}" /> -->
 
                 <Label text="{i18n>Currency}" />
 				<Text text="{display>/results/Curr}"  />
@@ -107,37 +107,7 @@
                 />
 			</f:content>
 		</f:SimpleForm>
-
-
-		<!-- <f:SimpleForm  
-			editable="true"
-			layout="ResponsiveGridLayout"
-			title="{i18n>ApproverComments}"
-			labelSpanXL="3"
-			labelSpanL="3"
-			labelSpanM="3"
-			labelSpanS="12"
-			adjustLabelSpan="false"
-			emptySpanXL="4"
-			emptySpanL="4"
-			emptySpanM="4"
-			emptySpanS="0"
-			columnsXL="1"
-			columnsL="1"
-			columnsM="1"
-			singleContainerFullSize="false" >
-			<f:content>
-			<Label text="{i18n>Approver1}" />
-				<Text text="{display>/results/Approver1}" />
-
-				<Label text="{i18n>Approver2}" />
-				<Text text="{display>/results/SupplierName}" />
-               
-			</f:content>
-		</f:SimpleForm> -->
-
-
-		<f:SimpleForm  
+<f:SimpleForm  
 			editable="true"
 			layout="ResponsiveGridLayout"
 			title=""
@@ -153,9 +123,63 @@
 			columnsXL="1"
 			columnsL="1"
 			columnsM="1"
-			singleContainerFullSize="false" >
+			singleContainerFullSize="false" 
+			class="formNoTitle">
 			<f:content>
-			<Table
+<Table headerText="{i18n>ExpenseReimbursement}" items="{path:'item>/results',templateShareable: false}"
+                >
+                    <columns>
+					 
+                        <Column width="25%">
+                            <Text text="{i18n>ExpenseReimbursement}"  />
+                        </Column>
+						 <Column >
+                            <Text text="Description" />
+                        </Column>
+                        <Column >
+                            <Text text="{i18n>GLAccountDescription}" />
+                        </Column>
+						<Column >
+                            <Text text="Description" />
+                        </Column>
+                        <Column  >
+                            <Text text="{i18n>ExpenseAmount}" />
+                        </Column>
+                       
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+						 <Text text="{item>Exptype}"/>
+						  <Text text='{item>Expname}'></Text>
+						   <Text text='{item>Saknr}'></Text>
+						   <Text text='{item>Stext}'></Text>
+                          <Text text='{item>Amt}' ></Text>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+	</f:content>
+		</f:SimpleForm>
+				<f:SimpleForm  
+			editable="true"
+			layout="ResponsiveGridLayout"
+			title=""
+			labelSpanXL="3"
+			labelSpanL="3"
+			labelSpanM="3"
+			labelSpanS="12"
+			adjustLabelSpan="false"
+			emptySpanXL="4"
+			emptySpanL="4"
+			emptySpanM="4"
+			emptySpanS="0"
+			columnsXL="1"
+			columnsL="1"
+			columnsM="1"
+			singleContainerFullSize="false" 
+			class="formNoTitle">
+			<f:content>
+
+			<Table headerText="Approval Log" 
                     items="{path:'approvallog>/results',templateShareable: false}"
                 >
                     <columns>
@@ -227,6 +251,8 @@
 				</Text>
 			</f:content>
 		</f:SimpleForm>
+
+		
     </VBox>
     
 </core:FragmentDefinition>
