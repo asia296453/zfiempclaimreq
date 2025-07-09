@@ -81,8 +81,8 @@
 				<Text text="{path: 'display>/results/Claimdat', formatter: '.formatDate'}"></Text>
 				
 
-                <!-- <Label text="{i18n>ExpenseAmount}" />
-				<Text text="{display>/results/Amt}" /> -->
+                <Label text="{i18n>TotalAmount}" />
+				<Text text="{display>/results/Totamt}" />
 
                 <Label text="{i18n>Currency}" />
 				<Text text="{display>/results/Curr}"  />
