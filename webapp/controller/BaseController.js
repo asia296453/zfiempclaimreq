@@ -97,13 +97,17 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                     if(item.Exptype === ''){
                         MessageBox.error("Please enter Expense/Reimbursement");
                         bflag = false;
-                    }else if(item.Amt === '0.000'){
+                    }else if(item.Amt === '0.000' || item.Amt === ''){
                         MessageBox.error("Please enter Expense Amount");
+                        bflag = false;
+                    }else if(item.Amt.indexOf("-") !== -1)//negative value
+                    {
+                        MessageBox.error("Expense Amount cannot be negative");
                         bflag = false;
                     }
                 });
             }
-            debugger;
+           
             return bflag;
         },
         onSearchExpType: function (oEvent) {
@@ -270,6 +274,11 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                         }else{
                             this.getModel(smodelname).setProperty("/results", oData);
                             if(oData.ClaimToItems !== undefined && oData.ClaimToItems.results.length > 0){
+                                oData.ClaimToItems.results.forEach(function (item, index) {
+                                    if(item.Amt === '0.000'){
+                                        item.Amt = '';
+                                    }                                    
+                                });
                                 this.getModel("item").setProperty("/results", oData.ClaimToItems.results);
                             }
                             resolve(oData);

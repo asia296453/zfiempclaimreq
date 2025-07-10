@@ -111,10 +111,9 @@
                 enabled="{Header>/data/editable}"
 				   />
 
-                <!-- <Label text="{i18n>ExpenseAmount}" />
-				<Input required="true" value="{create>/results/Amt}"  type="Number"
-				editable="{Header>/data/editable}"
-                enabled="{Header>/data/editable}"/> -->
+                <Label text="{i18n>TotalAmount}" />
+				<Text text="{create>/results/Totamt}" />
+
 
                 <Label text="{i18n>Currency}" />
 				 <Select  editable="{Header>/data/editable}" required="true"
@@ -192,7 +191,7 @@
 						  <Text text='{item>Expname}'></Text>
 						   <Text text='{item>Saknr}'></Text>
 						   <Text text='{item>Stext}'></Text>
-                          <Input value='{item>Amt}' type="Number"  enabled="{Header>/data/editable}" ></Input>
+                          <Input value='{item>Amt}' type="Number"  enabled="{Header>/data/editable}" />
                         </ColumnListItem>
                     </items>
                 </Table>

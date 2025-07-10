@@ -192,6 +192,9 @@ sap.ui.define([
                 success: function (oData) {
                     this.showBusy(false);
                     oData.results[0].Claimno = '0';
+                    oData.results.forEach(function (item, index) {
+                        item.Amt = '';
+                    });
                     resolve(oData.results);
                 }.bind(this),
                 error: function (oError) {
@@ -474,10 +477,19 @@ sap.ui.define([
                 {sap.m.MessageBox.confirm("Please confirm to Submit?", {
                 initialFocus: sap.m.MessageBox.Action.CANCEL,
                 onClose: function (sButton) {
-                    if (sButton == "OK") {                        
+                    if (sButton == "OK") {  
+
                         var oPayload = this.getOwnerComponent().getModel("create").getData().results;
                         oPayload.Status = 'SU';
                         oPayload.ClaimToItems = this.getOwnerComponent().getModel("item").getData().results;
+                    
+                        oPayload.ClaimToItems.forEach(function (item, index) {
+                            if(item.Amt !== ''){
+                                oPayload.Totamt = parseFloat(oPayload.Totamt) + parseFloat(item.Amt);
+                            }
+                            
+                        });
+                        oPayload.Totamt = (oPayload.Totamt).toString();
                         this.showBusy(true);  
                         debugger;                      
                         this.getModel().create("/CLAIMREQSet", oPayload, {
