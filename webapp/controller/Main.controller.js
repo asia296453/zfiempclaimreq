@@ -23,14 +23,15 @@ sap.ui.define([
             this.getOwnerComponent().getModel("create").setProperty("/results", []);
             this.getOwnerComponent().getModel("create").setProperty("/user", []);
             this.getOwnerComponent().getModel("create").setProperty("/userdetails", []);
-
-            var sclaimno = "";
+            this.getOwnerComponent().getModel("user").setProperty("/results", []);
             
+            //getting claimno begin
+            var sclaimno = "";            
             if(this.getOwnerComponent().getComponentData() !== undefined &&
                 this.getOwnerComponent().getComponentData().startupParameters.Claimno !== undefined){
                 sclaimno = this.getOwnerComponent().getComponentData().startupParameters.Claimno[0];
             }
-            if(window.location.href.indexOf("zfiempclaimreq-lookup") !== -1){
+            
                 if(window.location.href.indexOf("Claimno") !== -1){
                     var complete_url = window.location.href;
                     var pieces = complete_url.split("?");
@@ -42,8 +43,14 @@ sap.ui.define([
                         }
                     });
                 }
-            }         
-            
+            if(sclaimno.indexOf("#zfiempclaimreq-display") !== -1){
+                sclaimno = sclaimno.replace("#zfiempclaimreq-display",'');
+            }  
+            if(sclaimno.indexOf("#zfiempclaimreq-create") !== -1){
+                sclaimno = sclaimno.replace("#zfiempclaimreq-create",'');
+            }  
+            //getting claimno END
+
             var stype = '';
             if(window.location.href.indexOf("zfiempclaimreq-display") !== -1){
                 stype = "display";
@@ -57,12 +64,59 @@ sap.ui.define([
                 stype = "display";
             }
             this.setinitialmodels1(sclaimno,stype);
-            this.setinitialdata1(sclaimno,stype);
+            //this.setinitialdata1(sclaimno,stype);
         },
+        setinitialmodels1:function(sclaimno,stype){
+            var smodel = stype;
+            if (stype === 'manage') {
+                smodel='create';
+            }
+           
+            
+            this.getOdata("/CLAIMREQSet(Claimno='" + sclaimno + "')", smodel, null,true).then((response) => {
+                this.getOdata("/USREMPSet(Usrid='" + this.suser + "')", "user", null).then((res) => {
+                    this.getOdata("/EMPDTSet(Pernr='" + res.Pernr + "')", "userdetails", null).then((res1) => {
+                        debugger;
+                        this.setinitialdata1(sclaimno,stype,response,res,res1,smodel);                    
+                    });
+                });
+            });
+            
+            if(sclaimno !== '')
+            {                       
+                this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle ='';
+                var oFilter = new sap.ui.model.Filter("Claimno", sap.ui.model.FilterOperator.EQ, sclaimno);
+                this.getOdata("/CRWFLOGSet","approvallog", oFilter);
+                this.getOwnerComponent().getModel("claimno").setProperty("/results", false);
+            }else{
+                this.getOwnerComponent().getModel("claimno").setProperty("/results", true);
+            }
+            
+        this.getOdata("/TAXCODESet","Taxcode", null);
+        },
+        setinitialdata1:function(sclaimno,stype,response,res,res1,smodel){  
+            var oData = [];
+            var ddate = new Date();
+            var sTimeformat = sap.ui.core.format.DateFormat.getDateInstance({
+                pattern : "PThh'H'mm'M'ss'S'"
+            });
+            var scurtime = sTimeformat.format(ddate);
+            if(sclaimno === ''){
+                this.getOwnerComponent().getModel("claimno").setProperty("/results", true);
+                this.getOwnerComponent().getModel(smodel).getData().results.Crtdat = null;
+                this.getOwnerComponent().getModel(smodel).getData().results.Crttime = null;
+                if(response.Pernr === '00000000'){
+                    this.getOwnerComponent().getModel(smodel).getData().results.Pernr = '';
+                }
+                if(response.Totamt === '0.00'){
+                    this.getOwnerComponent().getModel(smodel).getData().results.Totamt = '';
+                }
+                this.getOwnerComponent().getModel(smodel).refresh(true); 
+            }else{
+                this.getOwnerComponent().getModel("claimno").setProperty("/results", false);
+            }
 
-        setinitialdata1:function(sclaimno,stype){  
-                    
-            if(stype === 'display' || sclaimno !== ''){
+            if(stype === 'display' ){
                 var sstr2 = {
                     "create": false,
                     "display": true,
@@ -72,20 +126,8 @@ sap.ui.define([
                 this.getOwnerComponent().getModel("ViewVis").setProperty("/data", sstr2);
                 this.getOwnerComponent().getModel("ViewVis").refresh(true);
                 this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle = "Employee Claim Request Display";
-
-                if(sclaimno !== '')
-                    {
-                        if(sclaimno.indexOf("#zfiempclaimreq-display") !== -1){
-                            sclaimno = sclaimno.replace("#zfiempclaimreq-display",'');
-                        }
-                        this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle ='';
-                        var oFilter = new sap.ui.model.Filter("Claimno", sap.ui.model.FilterOperator.EQ, sclaimno);
-                        this.getOdata("/CLAIMREQSet(Claimno='" + sclaimno + "')","display", null,true);
-                        this.getOdata("/CRWFLOGSet","approvallog", oFilter);
-                        this.getOdata("/CRWFLOGSet","approvallog", oFilter);
-                        this.getOdata("/USREMPSet(Usrid='" + this.suser + "')","user", null);
-                    }
-
+                
+                 
             }else if(stype === 'create'){
                 var sstr2 = {
                     "create": true,
@@ -97,6 +139,16 @@ sap.ui.define([
                 this.getOwnerComponent().getModel("ViewVis").setProperty("/data", sstr2);
                 this.getOwnerComponent().getModel("ViewVis").refresh(true);
                 this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle = "Employee Claim Request";
+                
+                if(sclaimno === ''){
+                    this.getOwnerComponent().getModel("create").getData().results.Pernr = res1.Pernr,//'12000334',12000941
+                    this.getOwnerComponent().getModel("create").getData().results.Claimdat = null;
+                    this.getOwnerComponent().getModel("create").getData().results.Kostl = res1.Kostl;// '1010100315',
+                    this.getOwnerComponent().getModel("create").getData().results.Ktext = res1.Ktext;//'TALENT ACQUISITION',
+                    this.getOwnerComponent().getModel("create").getData().results.Crtdat = ddate;
+                    this.getOwnerComponent().getModel("create").getData().results.Crttime = scurtime;
+                    this.getOwnerComponent().getModel("create").refresh(true);
+                    }
             }
             else if(stype === 'manage'){
                 var sstr2 = {
@@ -110,7 +162,6 @@ sap.ui.define([
                 this.getOwnerComponent().getModel("ViewVis").refresh(true);
                 this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle = "Employee Claim Request-On Behalf";
                 
-                
             }
             else{
                 var sstr2 = {
@@ -120,73 +171,16 @@ sap.ui.define([
                 this.getOwnerComponent().getModel("ViewVis").setProperty("/data", sstr2);
                 this.getOwnerComponent().getModel("ViewVis").refresh(true);
                 this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle = "Employee Claim Request Display";
+              
             }
-        },
-
-        setinitialmodels1:function(sclaimno,stype){
             
-            var oData = [];
-            var ddate = new Date();
-            var sTimeformat = sap.ui.core.format.DateFormat.getDateInstance({
-                pattern : "PThh'H'mm'M'ss'S'"
-            });
-            var scurtime = sTimeformat.format(ddate);
-            
-            if (stype === 'manage') {
-                this.getOwnerComponent().getModel("claimno").setProperty("/results", false);
-                this.getOdata("/CLAIMREQSet(Claimno='')", "create", null,true).then((response) => {
-                    this.getOwnerComponent().getModel("create").getData().results.Crtdat = null;
-                    this.getOwnerComponent().getModel("create").getData().results.Crttime = null;
-                    this.getOwnerComponent().getModel("create").refresh(true);
-                });
-            }
-            if (stype === 'create') {
-                this.getOwnerComponent().getModel("claimno").setProperty("/results", false);
-                this.getOdata("/CLAIMREQSet(Claimno='')", "create", null,true).then((response) => {
-                    this.getOdata("/USREMPSet(Usrid='" + this.suser + "')", "user", null).then((res) => {
-                        this.getOdata("/EMPDTSet(Pernr='" + res.Pernr + "')", "userdetails", null).then((res1) => {
-                            if (res1.Kostl === '') {
-                                res1.Kostl = '1010100315'
-                            }
-                            this.getOwnerComponent().getModel("create").getData().results.Pernr = res1.Pernr,//'12000334',12000941
-                            this.getOwnerComponent().getModel("create").getData().results.Claimdat = null;
-                            this.getOwnerComponent().getModel("create").getData().results.Kostl = res1.Kostl;// '1010100315',
-                            this.getOwnerComponent().getModel("create").getData().results.Ktext = res1.Ktext;//'TALENT ACQUISITION',
-                            this.getOwnerComponent().getModel("create").getData().results.Crtdat = ddate;
-                            this.getOwnerComponent().getModel("create").getData().results.Crttime = scurtime;
-                            this.getOwnerComponent().getModel("create").refresh(true);
-                        });
-                    });
-                });
-            }
-            if (stype === 'display') {
-                
-                this.getOdata("/CLAIMREQSet(Claimno='')", "display", null,true).then((response) => {
-                    if(sclaimno === ''){
-                    if(response.Pernr === '00000000'){
-                        this.getOwnerComponent().getModel("display").getData().results.Pernr = '';
-                    }
-                    if(response.Amt === '0.00'){
-                        this.getOwnerComponent().getModel("display").getData().results.Amt = '';
-                    }
-                    this.getOwnerComponent().getModel("display").getData().results.Crtdat = null;
-                    this.getOwnerComponent().getModel("display").getData().results.Crttime = null;
-                    this.getOwnerComponent().getModel("display").refresh(true);                        
-                }
-                });
-                if(sclaimno === ''){
-                    this.getOwnerComponent().getModel("claimno").setProperty("/results", true);
-                }else{
-                    this.getOwnerComponent().getModel("claimno").setProperty("/results", false);
-                }
-            }
-           
             var sstr1 = {
                 "editable": true
             }
             this.getOwnerComponent().getModel("Header").setProperty("/data", sstr1);
-            this.getOdata("/TAXCODESet","Taxcode", null);
         },
+
+       
         getnewrow:function(){
             this.showBusy(true);
             return new Promise((resolve, reject) => {
@@ -557,6 +551,77 @@ sap.ui.define([
             if (i.length < 2) i = "0" + i;
             if (a.length < 2) a = "0" + a;
             return [a, i, r].join(".")
-        }
+        },
+        setinitialmodels2:function(sclaimno,stype){
+            
+            var oData = [];
+            var ddate = new Date();
+            var sTimeformat = sap.ui.core.format.DateFormat.getDateInstance({
+                pattern : "PThh'H'mm'M'ss'S'"
+            });
+            var scurtime = sTimeformat.format(ddate);
+            
+            if (stype === 'manage') {
+                this.getOwnerComponent().getModel("claimno").setProperty("/results", false);
+                this.getOdata("/CLAIMREQSet(Claimno='" + sclaimno + "')", "create", null,true).then((response) => {
+                    this.getOwnerComponent().getModel("create").getData().results.Crtdat = null;
+                    this.getOwnerComponent().getModel("create").getData().results.Crttime = null;
+                    this.getOwnerComponent().getModel("create").refresh(true);
+                });
+            }
+            if (stype === 'create') {
+                this.getOwnerComponent().getModel("claimno").setProperty("/results", false);
+                this.getOdata("/CLAIMREQSet(Claimno='" + sclaimno + "')", "create", null,true).then((response) => {
+                    this.getOdata("/USREMPSet(Usrid='" + this.suser + "')", "user", null).then((res) => {
+                        this.getOdata("/EMPDTSet(Pernr='" + res.Pernr + "')", "userdetails", null).then((res1) => {
+                            if(sclaimno === ''){
+                            this.getOwnerComponent().getModel("create").getData().results.Pernr = res1.Pernr,//'12000334',12000941
+                            this.getOwnerComponent().getModel("create").getData().results.Claimdat = null;
+                            this.getOwnerComponent().getModel("create").getData().results.Kostl = res1.Kostl;// '1010100315',
+                            this.getOwnerComponent().getModel("create").getData().results.Ktext = res1.Ktext;//'TALENT ACQUISITION',
+                            this.getOwnerComponent().getModel("create").getData().results.Crtdat = ddate;
+                            this.getOwnerComponent().getModel("create").getData().results.Crttime = scurtime;
+                            this.getOwnerComponent().getModel("create").refresh(true);
+                            }
+                        });
+                    });
+                });
+            }
+            if (stype === 'display') {
+                
+                this.getOdata("/CLAIMREQSet(Claimno='" + sclaimno + "')", "display", null,true).then((response) => {
+                    if(sclaimno === ''){
+                    if(response.Pernr === '00000000'){
+                        this.getOwnerComponent().getModel("display").getData().results.Pernr = '';
+                    }
+                    if(response.Amt === '0.00'){
+                        this.getOwnerComponent().getModel("display").getData().results.Amt = '';
+                    }
+                    if(sclaimno === ''){
+                    this.getOwnerComponent().getModel("display").getData().results.Crtdat = null;
+                    this.getOwnerComponent().getModel("display").getData().results.Crttime = null;
+                    this.getOwnerComponent().getModel("display").refresh(true);  
+                    }                     
+                }
+                });
+                if(sclaimno === ''){
+                    this.getOwnerComponent().getModel("claimno").setProperty("/results", true);
+                }else{
+                    this.getOwnerComponent().getModel("claimno").setProperty("/results", false);
+                }
+            }
+            if(sclaimno !== '')
+                {                       
+                    this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle ='';
+                    var oFilter = new sap.ui.model.Filter("Claimno", sap.ui.model.FilterOperator.EQ, sclaimno);
+                    this.getOdata("/CRWFLOGSet","approvallog", oFilter);
+                    this.getOdata("/USREMPSet(Usrid='" + this.suser + "')","user", null);
+                }
+            var sstr1 = {
+                "editable": true
+            }
+            this.getOwnerComponent().getModel("Header").setProperty("/data", sstr1);
+            this.getOdata("/TAXCODESet","Taxcode", null);
+        },
     });
 });
