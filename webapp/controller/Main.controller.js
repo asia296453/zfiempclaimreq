@@ -15,7 +15,7 @@ sap.ui.define([
                 this.suser = sap.ushell.Container.getService("UserInfo").getId();
             }
             if(this.suser === ''){
-                this.suser = 'NTT_VENU';
+                this.suser = 'T_12001954';
             }
             
             this.ongetdropdowns();
@@ -82,6 +82,8 @@ sap.ui.define([
                         var oFilter = new sap.ui.model.Filter("Claimno", sap.ui.model.FilterOperator.EQ, sclaimno);
                         this.getOdata("/CLAIMREQSet(Claimno='" + sclaimno + "')","display", null,true);
                         this.getOdata("/CRWFLOGSet","approvallog", oFilter);
+                        this.getOdata("/CRWFLOGSet","approvallog", oFilter);
+                        this.getOdata("/USREMPSet(Usrid='" + this.suser + "')","user", null);
                     }
 
             }else if(stype === 'create'){
@@ -183,7 +185,7 @@ sap.ui.define([
                 "editable": true
             }
             this.getOwnerComponent().getModel("Header").setProperty("/data", sstr1);
-       
+            this.getOdata("/TAXCODESet","Taxcode", null);
         },
         getnewrow:function(){
             this.showBusy(true);

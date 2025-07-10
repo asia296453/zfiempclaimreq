@@ -36,6 +36,7 @@ sap.ui.define([
             this.setModel(new sap.ui.model.json.JSONModel(), "Message");
             this.setModel(new sap.ui.model.json.JSONModel(), "attachflag");
             this.setModel(new sap.ui.model.json.JSONModel(), "item");
+            this.setModel(new sap.ui.model.json.JSONModel(), "Taxcode");
             // enable routing
             this.getRouter().initialize();
             //this.getuserdtls();

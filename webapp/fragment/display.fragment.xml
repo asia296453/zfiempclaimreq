@@ -128,6 +128,13 @@
 			<f:content>
 <Table headerText="{i18n>ExpenseReimbursement}" items="{path:'item>/results',templateShareable: false}"
                 >
+				<headerToolbar>
+                	<OverflowToolbar style="Clear">
+                    <ToolbarSpacer />	
+                    <Button text="Edit Tax Code" type="Emphasized" press="onEditTaxCode" visible="{= ${user>/results/Apuser}==='X'? true : false}"/>
+               		</OverflowToolbar>
+				</headerToolbar>
+
                     <columns>
 					 
                         <Column width="25%">
@@ -145,7 +152,9 @@
                         <Column  >
                             <Text text="{i18n>ExpenseAmount}" />
                         </Column>
-                       
+                        <Column  >
+                            <Text text="{i18n>Taxcode}" />
+                        </Column>
                     </columns>
                     <items>
                         <ColumnListItem>
@@ -154,6 +163,7 @@
 						   <Text text='{item>Saknr}'></Text>
 						   <Text text='{item>Stext}'></Text>
                           <Text text='{item>Amt}' ></Text>
+						  <Text text='{item>Taxcode}' ></Text>
                         </ColumnListItem>
                     </items>
                 </Table>
@@ -244,11 +254,11 @@
 
 				<Label text="{i18n>RaisedBy}" />
 				<Text text="{display>/results/Pernr}"  />
-                <Text text="{display>/results/Crtby}">
+                <!-- <Text text="{display>/results/Crtby}">
 					<layoutData>
 						<l:GridData span="XL1 L2 M2 S4" />
 					</layoutData>
-				</Text>
+				</Text> -->
 			</f:content>
 		</f:SimpleForm>
 

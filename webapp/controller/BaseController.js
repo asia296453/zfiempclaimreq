@@ -110,6 +110,25 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
            
             return bflag;
         },
+        onEditTaxCode: function (oEvent) {
+            debugger;
+            var sclaimno = this.getView().getModel("display").getData().results.Claimno;
+            var xnavservice = sap.ushell && sap.ushell.Container && sap.ushell.Container.getService && sap.ushell.Container.getService("CrossApplicationNavigation");
+            var href = (xnavservice && xnavservice.hrefForExternal({
+                target: { semanticObject: "zfiempclaimapp", action: "approve" },
+                params: { "Claimno": sclaimno }
+            })) || "";
+            debugger;
+            if (href.indexOf("&sap-app-origin-hint=") !== -1) {
+                href.replaceAll("&sap-app-origin-hint=", "");
+            }
+            var sval = href.split("?");
+
+            var finalUrl = window.location.href.split("#")[0] + "&"+sval[1]+sval[0];
+            debugger;
+            sap.m.URLHelper.redirect(finalUrl, true);
+
+        },
         onSearchExpType: function (oEvent) {
             var sValue = oEvent.getParameter("value");
             var oFilter = new sap.ui.model.Filter("ExpType", sap.ui.model.FilterOperator.EQ, sValue);
