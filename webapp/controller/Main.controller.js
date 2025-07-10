@@ -478,7 +478,7 @@ sap.ui.define([
                         var oPayload = this.getOwnerComponent().getModel("create").getData().results;
                         oPayload.Status = 'SU';
                         oPayload.ClaimToItems = this.getOwnerComponent().getModel("item").getData().results;
-                    
+                        oPayload.Totamt = '0.00';
                         oPayload.ClaimToItems.forEach(function (item, index) {
                             if(item.Amt !== ''){
                                 oPayload.Totamt = parseFloat(oPayload.Totamt) + parseFloat(item.Amt);
