@@ -97,12 +97,19 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                     if(item.Exptype === ''){
                         MessageBox.error("Please enter Expense/Reimbursement");
                         bflag = false;
-                    }else if(item.Amt === '0.000' || item.Amt === ''){
+                    }else if(item.Amt !== ''){
+                        var fval = parseFloat(item.Amt);
+                        if(fval === 0){
+                            MessageBox.error("Please enter Expense Amount");
+                            bflag = false;
+                        }
+                        else if(fval < 0){
+                            MessageBox.error("Expense Amount cannot be negative");
+                            bflag = false;
+                        }
+                    }                    
+                    else if(item.Amt === '' ){
                         MessageBox.error("Please enter Expense Amount");
-                        bflag = false;
-                    }else if(item.Amt.indexOf("-") !== -1)//negative value
-                    {
-                        MessageBox.error("Expense Amount cannot be negative");
                         bflag = false;
                     }
                 });
@@ -110,23 +117,46 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
            
             return bflag;
         },
-        onEditTaxCode: function (oEvent) {
-            debugger;
-            var sclaimno = this.getView().getModel("display").getData().results.Claimno;
-            var xnavservice = sap.ushell && sap.ushell.Container && sap.ushell.Container.getService && sap.ushell.Container.getService("CrossApplicationNavigation");
-            var href = (xnavservice && xnavservice.hrefForExternal({
-                target: { semanticObject: "zfiempclaimapp", action: "approve" },
-                params: { "Claimno": sclaimno }
-            })) || "";
-            debugger;
-            if (href.indexOf("&sap-app-origin-hint=") !== -1) {
-                href.replaceAll("&sap-app-origin-hint=", "");
-            }
-            var sval = href.split("?");
+        onSaveTaxCode: function (oEvent) {
+            var oPayload = this.getOwnerComponent().getModel("display").getData().results;
+            oPayload.ClaimToItems = this.getOwnerComponent().getModel("item").getData().results;            
+            this.showBusy(true);
+            
+            this.getModel().create("/CLAIMREQSet", oPayload, {
+                method: "POST",
+                success: function (oData, res) {
+                    this.showBusy(false);
+                    if (oData.Claimno !== '') {                       
+                        var sMsg ="Tax Code for Claim No." + oData.Claimno + " saved Successfully ";
+                        MessageBox.success(sMsg);
+                    } else {
+                        var msg = JSON.parse(res.headers["sap-message"]).message;
+                        MessageBox.error(msg);
+                    }
 
-            var finalUrl = window.location.href.split("#")[0] + "&"+sval[1]+sval[0];
-            debugger;
-            sap.m.URLHelper.redirect(finalUrl, true);
+                }.bind(this),
+                error: function (oError) {
+
+                    this.showBusy(false);
+                    var msg = JSON.parse(oError.responseText).error.message.value;
+                    MessageBox.error(msg);
+                }.bind(this)
+            });
+            // var sclaimno = this.getView().getModel("display").getData().results.Claimno;
+            // var xnavservice = sap.ushell && sap.ushell.Container && sap.ushell.Container.getService && sap.ushell.Container.getService("CrossApplicationNavigation");
+            // var href = (xnavservice && xnavservice.hrefForExternal({
+            //     target: { semanticObject: "zfiempclaimapp", action: "approve" },
+            //     params: { "Claimno": sclaimno }
+            // })) || "";
+            // 
+            // if (href.indexOf("&sap-app-origin-hint=") !== -1) {
+            //     href.replaceAll("&sap-app-origin-hint=", "");
+            // }
+            // var sval = href.split("?");
+
+            // var finalUrl = window.location.href.split("#")[0] + "&"+sval[1]+sval[0];
+            // 
+            // sap.m.URLHelper.redirect(finalUrl, true);
 
         },
         onSearchExpType: function (oEvent) {
@@ -291,7 +321,15 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                             this.getModel(smodelname).setProperty("/results", oData.results);
                             resolve(oData.results);
                         }else{
-                            this.getModel(smodelname).setProperty("/results", oData);
+                            if(oData.Status !== undefined && oData.Status !== 'RE' 
+                                && oData.Status !== '' &&
+                                window.location.href.indexOf("zfiempclaimreq-create") !== -1 )
+                                {
+                                this.getOdata("/CLAIMREQSet(Claimno='')", smodelname, null,true)
+                            }else{
+                                this.getModel(smodelname).setProperty("/results", oData);
+                            }
+                            
                             if(oData.ClaimToItems !== undefined && oData.ClaimToItems.results.length > 0){
                                 oData.ClaimToItems.results.forEach(function (item, index) {
                                     if(item.Amt === '0.000'){

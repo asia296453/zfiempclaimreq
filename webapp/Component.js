@@ -46,10 +46,10 @@ sap.ui.define([
             var appId = this.getManifestEntry("/sap.app/id");
             var appPath = appId.replaceAll(".", "/");
             var appModulePath = jQuery.sap.getModulePath(appPath);
-          //  debugger;
+          //  
             var surl1 = appModulePath + "/odata/v2/carVendorName"; 
             var surl2 = "/DEST_SF_TEST/User('12000941')";
-            debugger;
+            
             var aData = $.get({
                 type: "GET",
                 contentType: "application/json",
@@ -57,10 +57,10 @@ sap.ui.define([
                 dataType: "json",
                 async: false,
                 success: function (data, textStatus, jqXHR) {
-                   debugger;
+                   
                 }.bind(this),
                 error: function (oMsg) {
-                  debugger;
+                  
                  }
             });
 

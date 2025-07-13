@@ -131,7 +131,7 @@
 				<headerToolbar>
                 	<OverflowToolbar style="Clear">
                     <ToolbarSpacer />	
-                    <Button text="Edit Tax Code" type="Emphasized" press="onEditTaxCode" visible="{= ${user>/results/Apuser}==='X'? true : false}"/>
+                    <Button text="Save Tax Code" type="Emphasized" press="onSaveTaxCode" visible="{= ${user>/results/Apuser}==='X'? true : false}"/>
                		</OverflowToolbar>
 				</headerToolbar>
 
@@ -163,7 +163,10 @@
 						   <Text text='{item>Saknr}'></Text>
 						   <Text text='{item>Stext}'></Text>
                           <Text text='{item>Amt}' ></Text>
-						  <Text text='{item>Taxcode}' ></Text>
+						  <ComboBox items="{Taxcode>/results}"  selectedKey="{item>Taxcode}" editable="{= ${user>/results/Apuser}==='X'? true : false}"
+						  enabled="{= ${user>/results/Apuser}==='X'? true : false}">
+                                 <core:Item key="{Taxcode>Mwskz}" text="{Taxcode>Mwskz}"/>
+                                </ComboBox>
                         </ColumnListItem>
                     </items>
                 </Table>

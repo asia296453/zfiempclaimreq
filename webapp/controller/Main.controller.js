@@ -76,7 +76,9 @@ sap.ui.define([
             this.getOdata("/CLAIMREQSet(Claimno='" + sclaimno + "')", smodel, null,true).then((response) => {
                 this.getOdata("/USREMPSet(Usrid='" + this.suser + "')", "user", null).then((res) => {
                     this.getOdata("/EMPDTSet(Pernr='" + res.Pernr + "')", "userdetails", null).then((res1) => {
-                        debugger;
+                        if(this.getOwnerComponent().getModel("create").getData().results.Status === ''){
+                            sclaimno = '';
+                        }
                         this.setinitialdata1(sclaimno,stype,response,res,res1,smodel);                    
                     });
                 });
@@ -140,6 +142,7 @@ sap.ui.define([
                 this.getOwnerComponent().getModel("ViewVis").refresh(true);
                 this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle = "Employee Claim Request";
                 
+               
                 if(sclaimno === ''){
                     this.getOwnerComponent().getModel("create").getData().results.Pernr = res1.Pernr,//'12000334',12000941
                     this.getOwnerComponent().getModel("create").getData().results.Claimdat = null;
@@ -220,7 +223,7 @@ sap.ui.define([
         },
 
         deleteRow: function (oEvent) {
-            debugger;
+            
             var ideleteRecord = oEvent.getSource().getParent().getId().split("-");
             ideleteRecord=ideleteRecord[ideleteRecord.length - 1];
             var odata = this.getView().getModel("item").getProperty("/results");
@@ -436,7 +439,7 @@ sap.ui.define([
                 var oPayload = this.getOwnerComponent().getModel("create").getData().results;
                 oPayload.Status = 'CR';
                 oPayload.ClaimToItems = this.getOwnerComponent().getModel("item").getData().results;
-                debugger;
+                
                 this.showBusy(true);
                 this.getModel().create("/CLAIMREQSet", oPayload, {
                     method: "POST",
@@ -487,7 +490,7 @@ sap.ui.define([
                         });
                         oPayload.Totamt = (oPayload.Totamt).toString();
                         this.showBusy(true);  
-                        debugger;                      
+                                              
                         this.getModel().create("/CLAIMREQSet", oPayload, {
                             method: "POST",
                             success: function (oData,res) {
