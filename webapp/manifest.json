@@ -120,7 +120,7 @@
       }
     },
     "rootView": {
-      "viewName": "zfiempclaimreq.view.App",
+      "viewName": "zfiempclaimreq.view.Main",
       "type": "XML",
       "id": "App",
       "async": true
