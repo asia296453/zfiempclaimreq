@@ -14,9 +14,7 @@ sap.ui.define([
             if(sap.ushell !== undefined){
                 this.suser = sap.ushell.Container.getService("UserInfo").getId();
             }
-            if(this.suser === ''){
-                this.suser = 'T_12001954';
-            }
+           debugger;
             
             this.ongetdropdowns();
             this.getOwnerComponent().getModel("display").setProperty("/results", []);
@@ -164,6 +162,10 @@ sap.ui.define([
                 this.getOwnerComponent().getModel("ViewVis").setProperty("/data", sstr2);
                 this.getOwnerComponent().getModel("ViewVis").refresh(true);
                 this.getResourceBundle().aPropertyFiles[0].mProperties.appTitle = "Employee Claim Request-On Behalf";
+                if(this.getOwnerComponent().getModel("create").getData().results.Onbehalf === '00000000'){
+                    this.getOwnerComponent().getModel("create").getData().results.Onbehalf = '';
+                    this.getOwnerComponent().getModel("create").refresh(true);
+                }
                 
             }
             else{

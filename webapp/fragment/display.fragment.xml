@@ -256,7 +256,7 @@
 				<Text text="{display>/results/Belnr}" />
 
 				<Label text="{i18n>RaisedBy}" />
-				<Text text="{display>/results/Pernr}"  />
+				<Text text="{display>/results/Crtby}"  />
                 <!-- <Text text="{display>/results/Crtby}">
 					<layoutData>
 						<l:GridData span="XL1 L2 M2 S4" />

@@ -169,9 +169,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             if(sap.ushell !== undefined){
                 suser = sap.ushell.Container.getService("UserInfo").getId();
             }
-            if(suser === ''){
-                suser = 'NTT_VENU';
-            }
+            debugger;
             var sValue = this.getView().getModel("display").getData().results.Claimno;
             
             var oFilter = new sap.ui.model.Filter("Claimno", sap.ui.model.FilterOperator.EQ, sValue);
