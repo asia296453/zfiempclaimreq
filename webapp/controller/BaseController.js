@@ -5,6 +5,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
     "use strict";
     return e.extend("zfiempclaimreq.controller.BaseController", {
         onInit() {
+            
         },
         getRouter: function () {
             return this.getOwnerComponent().getRouter()
