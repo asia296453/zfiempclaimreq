@@ -14,8 +14,6 @@ sap.ui.define([
             if(sap.ushell !== undefined){
                 this.suser = sap.ushell.Container.getService("UserInfo").getId();
             }
-           debugger;
-            
             this.ongetdropdowns();
             this.getOwnerComponent().getModel("display").setProperty("/results", []);
             this.getOwnerComponent().getModel("create").setProperty("/results", []);

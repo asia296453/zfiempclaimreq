@@ -170,7 +170,6 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             if(sap.ushell !== undefined){
                 suser = sap.ushell.Container.getService("UserInfo").getId();
             }
-            debugger;
             var sValue = this.getView().getModel("display").getData().results.Claimno;
             
             var oFilter = new sap.ui.model.Filter("Claimno", sap.ui.model.FilterOperator.EQ, sValue);
@@ -542,11 +541,28 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
             e.getParameters().addHeaderParameter(s)
         },
         onUploadCompleteListData: function (e) {
-            
             this.readAllAttachmentData(this.getModel("AttachmentType").sListType, 'X');
         },
         onChangeListData: function (e) {
             //BOC-EX-GOME
+            var sregex = /^[0-9a-zA-Z ... ]+$/;
+            var ofile = e.mParameters.files[0].name.split(".");
+            this.sfile = e.mParameters.files[0].name;
+            if(ofile.length > 2){
+                sap.m.MessageBox.error("Invalid Filename", {
+                    initialFocus: sap.m.MessageBox.Action.CANCEL,
+                    onClose: function (sButton) {
+                        if (sButton == "CLOSE") {
+                            this.getView().byId("idUploadCollectionAttachments").getItems().forEach(function (item,idx) {
+                               if(item.mProperties.fileName === this.sfile){
+                                this.getView().byId("idUploadCollectionAttachments").removeItem(idx);
+                               }
+                            }.bind(this));
+                        }}.bind(this)});
+    
+                return;
+            }
+            
             this.getOwnerComponent().getModel("attachflag").setProperty("/flag", 'X');
             var t = "/sap/opu/odata/sap/ZFI_EMP_CLAIM_REQ_SRV",
                 //EOC-EX-GOME
