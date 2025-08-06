@@ -518,7 +518,12 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                 a = this.getModel("i18n");
                 
             var szlevel = '0';
-            var sserial = '0';
+            if(this.sserial !== undefined ){
+                this.sserial = this.sserial + 1;
+            }else{
+                this.sserial = 0;
+            }
+            var sserial = (this.sserial).toString();
             var i = new sap.m.UploadCollectionParameter({
                 name: "slug",
                 value: e.getParameter("fileName") + "|" + sClaimno + "|" + szlevel + "|" + sserial //add lot no after t
