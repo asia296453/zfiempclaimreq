@@ -36,7 +36,8 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
 
         onCloseExpType: function (oEvent) {
             this.irowindex = '';
-            this.ExpType.close();
+            oEvent.getSource().getBinding("items").filter([]);
+            // this.getOdata("/EXPTYPESet","ExpType", null);
         },
         onOpenExpType: function (oEvent) {
             var irow = oEvent.getParameter("id").split("-");
@@ -162,8 +163,25 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
         },
         onSearchExpType: function (oEvent) {
             var sValue = oEvent.getParameter("value");
-            var oFilter = new sap.ui.model.Filter("ExpType", sap.ui.model.FilterOperator.EQ, sValue);
-            this.getOdata("/EXPTYPESet","ExpType", [oFilter]);
+           // var oFilter = new sap.ui.model.Filter("ExpType", sap.ui.model.FilterOperator.Contains, sValue);
+            //this.getOdata("/EXPTYPESet","ExpType", [oFilter]);
+            //oEvent.getSource().getBinding("items").filter([oFilter]);
+            
+            var oF4Data = oEvent.getSource().getBinding("items").getModel().getData().results;
+             if (oF4Data && oF4Data.length > 0) {
+                var selCurrRow = oF4Data.filter(function (el) {
+                    return el.ExpType.indexOf(sValue) !== -1;
+                });
+            }
+            if (selCurrRow.length > 0) {
+                var oFilter = new sap.ui.model.Filter("ExpType", sap.ui.model.FilterOperator.Contains, sValue);
+                oEvent.getSource().getBinding("items").filter([oFilter]);
+            }
+            else{
+                var oFilter = new sap.ui.model.Filter("ExpName", sap.ui.model.FilterOperator.Contains, sValue);
+                oEvent.getSource().getBinding("items").filter([oFilter]);
+            }
+			
         },
         onPressDisplay: function (oEvent) {
             var suser = '';
@@ -213,6 +231,8 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
         },
 
         handleValueHelpExpType: function (e) {
+            e.getSource().getBinding("items").filter([]);
+
             var oFilter = new sap.ui.model.Filter("ExpType", sap.ui.model.FilterOperator.EQ, e.getParameter("selectedItem").getProperty("title"));
            this.showBusy(true);
             this.getView().getModel().read("/EXPTYPESet(ExpType='" + e.getParameter("selectedItem").getProperty("title") + "')", {

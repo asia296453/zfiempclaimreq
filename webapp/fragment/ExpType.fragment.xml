@@ -2,7 +2,7 @@
                          xmlns:core="sap.ui.core">
     <SelectDialog 
                   title="{i18n>ExpenseReimbursement}"
-                  search=".onSearchExpType"
+                  search=".onSearchExpType" liveChange=".onSearchExpType"
                   confirm="handleValueHelpExpType"
                   cancel="onCloseExpType"
                   items="{path:'ExpType>/results'}"
