@@ -231,8 +231,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
         },
 
         handleValueHelpExpType: function (e) {
-            e.getSource().getBinding("items").filter([]);
-
+            // e.getSource().getBinding("items").filter([]);
             var oFilter = new sap.ui.model.Filter("ExpType", sap.ui.model.FilterOperator.EQ, e.getParameter("selectedItem").getProperty("title"));
            this.showBusy(true);
             this.getView().getModel().read("/EXPTYPESet(ExpType='" + e.getParameter("selectedItem").getProperty("title") + "')", {
@@ -254,6 +253,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/core/routing/History", "sap
                         this.showBusy(false);
                     }.bind(this)
                 });
+                 e.getSource().getBinding("items").filter([]);
            
             
         },
